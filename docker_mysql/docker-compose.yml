@@ -1,0 +1,15 @@
+version: "1.0"
+services:
+  docker_mysql:
+    image: mysql:latest
+    restart: always
+    container_name: docker_mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=12345" # root 用户密码
+    ports:
+      - "12345:3306" # 主机 12345 端口对应容器 3306 端口
+    volumes:
+      - my_volume:/var/lib/mysql # 将 mysql 中的数据映射到外部 volume
+      - ./scripts:/docker-entrypoint-initdb.d # 根据同目录下的 scripts 进行初始化
+volumes:
+  my_volume: # 外部 volume，确保 container 销毁后数据依然保留
