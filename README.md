@@ -1,4 +1,4 @@
-# 后端小组任务：SpringBoot 连接数据库
+# 后端小组任务：Spring Boot 连接数据库
 ## MySQL Docker 部署
 从服务器拉取 mysql 镜像
 ```shell
@@ -58,7 +58,7 @@ docker build -t zenpk/basic:v1 .
 docker pull zenpk/basic:v1
 docker run --rm -it --name basic_backend -p 8080:8080 zenpk/basic:v1
 ```
-此时后端程序并不能正常访问数据库，原因是 localhost 指向了 container 内部的网络，因此需要修改 JPA 的设置，将数据库地址纸箱 host.docker.internal，并在运行的时候指定该地址为宿主机的地址
+此时后端程序并不能正常访问数据库，原因是 localhost 指向了 container 内部的网络，因此需要修改 JPA 的设置，将数据库地址指向 host.docker.internal，并在运行的时候指定该地址为宿主机的地址
 ```shell
 docker run --rm -it --name basic_backend -p 8080:8080 --add-host host.docker.internal:host-gateway zenpk/basic:v1
 ```
