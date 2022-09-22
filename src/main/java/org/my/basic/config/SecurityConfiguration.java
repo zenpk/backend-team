@@ -62,7 +62,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         // 定义 CORS 规则
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of("http://localhost:5173")); // 允许来自前端 Vue 的请求
+        configuration.setAllowedOrigins(java.util.List.of("http://localhost:5173", "http://101.43.179.27:5173")); // 允许来自前端 Vue 的请求
         configuration.setAllowedMethods(java.util.List.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowCredentials(true);
         // 所有 URL 应用此规则
