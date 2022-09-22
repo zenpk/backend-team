@@ -1,65 +1,52 @@
-# 后端小组任务：Spring Boot 连接数据库
-## MySQL Docker 部署
-从服务器拉取 mysql 镜像
-```shell
-docker pull mysql:latest
-```
-创建 MySQL 的 container 时，由于需要进行一些初始设置，因此采用 docker compose 的方式运行
-```text
-└───docker_mysql
-    │   docker-compose.yml
-    │
-    └───scripts
-            init_db.sql
-```
-docker-compose.yml 包含了 root 密码、端口映射、外部 volume 的设定等，init_db.sql 会创建需要的数据库、用户和表格，并赋予相关权限
+# 后端组任务：Spring Boot 注册登录接口
 
-执行 compose 命令运行
+## 运行 MySQL
+
+可选择以 Docker 形式运行
+
 ```shell
 cd ./docker_mysql
 docker compose up
 ```
-这样一个 MySQL 的 container 就运行在了主机的 12345 端口
-## 连接数据库测试是否成功运行
-连接 MySQL 数据库，登录到 work2 用户
-```sh
-mysql -h 127.0.0.1 -P 12345 -u work2 -pwork2 work2
-```
-```text
-mysql> SHOW TABLES;
-+-----------------+
-| Tables_in_work2 |
-+-----------------+
-| dorm_infos      |
-+-----------------+
-```
-## Scaffold 生成后端代码
+
+或直接在宿主机运行，并修改 ``application.properties``的地址和用户
+
+## Spring 依赖
+
 从 start.spring.io 中选择合适版本和以下依赖：
+
 1. Spring Boot DevTools
 2. Spring Web
 3. MySQL Driver
 4. Spring Data JPA
+5. Spring Security
 
-生成初始代码，设定 JPA 连接的数据库地址、库名、用户名、密码，并将 Hibernate 设置为 update 模式
+## 功能概述
 
-## MVC 框架
-创建数据库表格对应的 model: DormInfo 并设置对应的数据结构，创建 Spring 自动识别的 Repository 提供 CRUD 功能，创建 Controller 监听 GET 请求，监听到 "/show" 地址的请求时读取表格 "dorm_infos" 中的全部数据，以 JSON 形式返回给客户端
-## 部署
-采用容器化部署，首先使用 Maven 编译为 jar 文件
+1. Spring Web 提供 Rest 请求支持
+2. Spring Security 提供用户认证、权限管理
+3. 连接 MySQL 数据库进行读写
+4. 端口为 8080
+
+## API
+
+参考：[API 文档](https://www.apifox.cn/apidoc/shared-7a72aec1-4404-41c6-baeb-0e57788e50bb)
+
+## 前端测试
+
+针对本项目搭建了一个建于的前端页面，仓库地址：[frontend-vue](https://github.com/zenpk/frontend-vue)
+
+## Todo
+
+- [ ] 更详细的错误提示
+- [ ] 更精确的 CORS filter
+- [ ] 加入 Remember Me 支持
+- [ ] 加入 Spring Security JWT 支持
+- [ ] 登出功能
+- [ ] 前端登录后返回上一界面
+
+测试运行（5173 端口）：
+
 ```shell
-mvn package
+npm run dev
 ```
-在 Dockerfile 中设置对应的 jar 名，build
-```shell
-docker build -t zenpk/basic:v1 .
-```
-由于腾讯云访问 GitHub 太慢，因此上述步骤均在本地完成，将 image push 到 docker hub 上，再 pull 到服务器并运行
-```shell
-docker pull zenpk/basic:v1
-docker run --rm -it --name basic_backend -p 8080:8080 zenpk/basic:v1
-```
-此时后端程序并不能正常访问数据库，原因是 localhost 指向了 container 内部的网络，因此需要修改 JPA 的设置，将数据库地址指向 host.docker.internal，并在运行的时候指定该地址为宿主机的地址
-```shell
-docker run --rm -it --name basic_backend -p 8080:8080 --add-host host.docker.internal:host-gateway zenpk/basic:v1
-```
-现在即可访问 http://101.43.179.27:8080/show 查看结果 

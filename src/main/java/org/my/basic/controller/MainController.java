@@ -11,11 +11,13 @@ public class MainController {
         return "Hello World!";
     }
 
+    // user 身份可以访问 /user
     @GetMapping("/user")
     public String helloUser() {
         return "Hello User!";
     }
 
+    // admin 身份可以访问 /admin
     @GetMapping("/admin")
     public String admin() {
         return "Hello Admin!";
