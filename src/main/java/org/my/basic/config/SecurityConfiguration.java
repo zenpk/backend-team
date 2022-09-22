@@ -1,10 +1,9 @@
 package org.my.basic.config;
 
+import org.my.basic.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -17,26 +16,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+    private final UserService userService;
 
-    public SecurityConfiguration() {
+    public SecurityConfiguration(UserService userService) {
+        this.userService = userService;
     }
 
-    // 密码使用 BCrypt 加密
+    // 提供 BCrypt 加密器
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
+    // 设置验证机制
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userService); // 使用自定义的用户服务
+        authProvider.setPasswordEncoder(passwordEncoder()); // 使用 BCrypt
         return authProvider;
     }
 
@@ -60,17 +57,19 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
-        http.authorizeRequests(auth -> {
-                    // 设置访问权限
-                    auth.antMatchers("/", "/register**", "/login**").permitAll();
-                    auth.antMatchers("/user").hasRole("USER");
-                    auth.antMatchers("/admin").hasRole("ADMIN");
-                    auth.anyRequest().authenticated();
-                })
-                .formLogin()
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true")
+        // 设置访问权限
+        http
+                .csrf().disable() // 禁用此项使 POST 请求不被阻拦
+                .authorizeRequests()
+                .antMatchers("/", "/register**").permitAll() // 任何用户都能访问这些地址
+                .antMatchers("/user").hasRole("USER") // 仅 USER 可访问
+                .antMatchers("/admin").hasRole("ADMIN") // 仅 ADMIN 可访问
+                .anyRequest().authenticated() // 访问其他地址均需要登录认证
+                .and()
+                .formLogin() // 展示登录界面
+                .loginProcessingUrl("/login") // 前端传入登录数据的地址
+                .defaultSuccessUrl("/", true) // 登录后跳转地址
+                .failureUrl("/login?error=true") // 登录失败地址
                 .and()
                 .logout()
                 .logoutUrl("/logout")

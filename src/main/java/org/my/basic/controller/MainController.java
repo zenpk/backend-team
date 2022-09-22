@@ -11,8 +11,13 @@ public class MainController {
         return "Hello World!";
     }
 
+    @GetMapping("/user")
+    public String helloUser() {
+        return "Hello User!";
+    }
+
     @GetMapping("/admin")
     public String admin() {
-        return "admin";
+        return "Hello Admin!";
     }
 }
