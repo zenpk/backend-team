@@ -49,4 +49,5 @@ npm run dev -- --host
 - [ ] 加入 Remember Me 支持
 - [ ] 加入 Spring Security JWT 支持
 - [ ] 登出功能
+- [ ] 为不同用户分配不同 role
 - [ ] 前端登录后返回上一界面
