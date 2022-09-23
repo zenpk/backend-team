@@ -34,7 +34,13 @@ docker compose up
 
 ## 前端测试
 
-针对本项目搭建了一个建于的前端页面，仓库地址：[frontend-vue](https://github.com/zenpk/frontend-vue)
+针对本项目使用 Vue 搭建了一个前端测试页面，仓库地址：[frontend-vue](https://github.com/zenpk/frontend-vue)
+
+测试运行（5173 端口）：
+
+```shell
+npm run dev -- --host
+```
 
 ## Todo
 
@@ -44,9 +50,3 @@ docker compose up
 - [ ] 加入 Spring Security JWT 支持
 - [ ] 登出功能
 - [ ] 前端登录后返回上一界面
-
-测试运行（5173 端口）：
-
-```shell
-npm run dev
-```
