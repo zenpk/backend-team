@@ -1,53 +1,50 @@
-# 后端组任务：Spring Boot 注册登录接口
+# backend-team-go
 
-## 运行 MySQL
+The Go implementation of https://github.com/zenpk/backend-team
 
-可选择以 Docker 形式运行
+## Packages
 
-```shell
-cd ./docker_mysql
-docker compose up
-```
+1. Gin：HTTP 框架（对标 Spring Web）
+2. GORM：用于连接 MySQL 数据库（对标 Spring Data JPA/Hibernate）
 
-或直接在宿主机运行，并修改 ``application.properties``的地址和用户
+## 运行
 
-## Spring 依赖
-
-从 start.spring.io 中选择合适版本和以下依赖：
-
-1. Spring Boot DevTools
-2. Spring Web
-3. MySQL Driver
-4. Spring Data JPA
-5. Spring Security
-
-## 功能概述
-
-1. Spring Web 提供 Rest 请求支持
-2. Spring Security 提供用户认证、权限管理
-3. 连接 MySQL 数据库进行读写
-4. 端口为 8080
-
-## API
-
-参考：[API 文档](https://www.apifox.cn/apidoc/shared-7a72aec1-4404-41c6-baeb-0e57788e50bb)
-
-## 前端测试
-
-针对本项目使用 Vue 搭建了一个前端测试页面，仓库地址：[frontend-vue](https://github.com/zenpk/frontend-vue)
-
-测试运行（5173 端口）：
+### Linux
 
 ```shell
-npm run dev -- --host
+go build
+./backend-team-go
 ```
 
-## Todo
+### Windows
 
-- [ ] 更详细的错误提示
-- [ ] 更精确的 CORS filter
-- [ ] 加入 Remember Me 支持
-- [ ] 加入 Spring Security JWT 支持
-- [ ] 登出功能
-- [ ] 为不同用户分配不同 role
-- [ ] 前端登录后返回上一界面
+```shell
+go build
+```
+
+双击 ``backend-team-go.exe``
+
+默认为 8081 端口，数据库地址与 Spring Boot 版介绍的 Docker 地址一致
+
+API 与 Spring Boot 版基本相同
+
+## 文件结构说明
+
+```text
++---config/
+|       config.go -> 预设参数
+|
++---controller/
+|       router.go -> URL 路由
+|
++---dal/ -> 数据持久层
+|       db_init.go -> 初始化数据库
+|       user.go -> 用户相关
+|
++---service/ -> 服务层
+|       main.go -> 其他操作
+|       user.go -> 登录注册相关操作
+|
++---go.mod -> 依赖管理
++---main.go -> 主程序入口
+```
